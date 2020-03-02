@@ -1,0 +1,82 @@
+sourceSets {
+    main {
+        java {
+            srcDir 'build/generated/wsdl'
+        }
+    }
+}
+
+dependencies {
+    // this supposed to be working under Java SE 11
+    //    implementation 'org.apache.cxf:apache-cxf:3.3.5'
+
+    // this is needed even on Java SE 8:
+    // https://mvnrepository.com/artifact/javax.jws/javax.jws-api
+    compile group: 'javax.jws', name: 'javax.jws-api', version: '1.1'
+
+}
+
+configurations {
+    jaxws
+}
+
+dependencies {
+    jaxws 'com.sun.xml.ws:jaxws-tools:2.3.0'
+}
+
+task wsimportLegacy {
+
+    inputs.dir('src/main/resources/wsdl/input')
+    outputs.dir('build/generated/wsdl/org/system/wsdl/legacy')
+
+    doFirst {
+        mkdir 'build/generated/wsdl'
+    }
+    doLast {
+        ant.taskdef(name: 'wsimport',
+                classname: 'com.sun.tools.ws.ant.WsImport',
+                classpath: configurations.jaxws.asPath)
+        ant.wsimport(
+                wsdl: 'src/main/resources/wsdl/input/from.wsdl',
+                wsdlLocation: 'http://test.int.org:6666/ws/org?WSDL',
+                package: 'org.system.wsdl.legacy',
+                sourcedestdir: 'build/generated/wsdl',
+                xnocompile: 'true',
+                disableAuthenticator: 'true',
+                xdebug: 'true'
+        ) {
+        }
+    }
+}
+
+
+task wsimportCloud {
+
+    inputs.dir('src/main/resources/wsdl/output')
+    outputs.dir('build/generated/wsdl/org/system/wsdl/cloud')
+
+    doFirst {
+        mkdir 'build/generated/wsdl'
+    }
+    doLast {
+        ant.taskdef(name: 'wsimport',
+                classname: 'com.sun.tools.ws.ant.WsImport',
+                classpath: configurations.jaxws.asPath)
+        ant.wsimport(
+                wsdl: 'src/main/resources/wsdl/output/to.wsdl',
+                wsdlLocation: 'https://vendor.com/Garlicpen/GarlicPen.svc?wsdl',
+                package: 'org.system.wsdl.cloud',
+//                binding: 'ws/ws-options.xml',
+                sourcedestdir: 'build/generated/wsdl',
+                xnocompile: 'true',
+                disableAuthenticator: 'true'
+        ) {
+        }
+    }
+}
+
+task wsimport() {
+    dependsOn(wsimportLegacy, wsimportCloud)
+}
+
+compileJava.dependsOn(wsimport)

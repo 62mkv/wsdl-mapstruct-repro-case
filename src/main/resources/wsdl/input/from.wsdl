@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:tns="http://vendor.com/blackbox"
+        xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        name="legacy-wsdl-name" targetNamespace="http://vendor.com/blackbox">
+    <wsdl:documentation>It shall be used for testing, to simulate soap messages.
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://vendor.com/blackbox/Imports">
+            <xsd:import namespace="http://vendor.com/blackbox" schemaLocation="GarlicPen.svc.xsd_xsd1.xsd"/>
+            <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"
+                        schemaLocation="GarlicPen.svc.xsd_xsd0.xsd"/>
+            <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"
+                        schemaLocation="GarlicPen.svc.xsd_xsd2.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="SellGarlicResponse">
+        <wsdl:part name="parameters" element="tns:SellGarlicResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SellGarlicRequest">
+        <wsdl:part name="parameters" element="tns:SellGarlicRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SellGarlicRequest_Headers">
+        <wsdl:part name="Authentication" element="tns:Authentication">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BaseRequest_Headers">
+        <wsdl:part name="Authentication" element="tns:Authentication">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GarlicPenContract_SellGarlic_FaultFault_FaultMessage">
+        <wsdl:part name="detail" element="tns:Fault">
+        </wsdl:part>
+    </wsdl:message>
+
+    <wsdl:portType name="GarlicPenContract">
+        <wsdl:operation name="SellGarlic">
+            <wsdl:input name="SellGarlicRequest" message="tns:SellGarlicRequest"
+                        wsaw:Action="http://vendor.com/blackbox/GarlicPenContract/SellGarlic">
+            </wsdl:input>
+            <wsdl:output name="SellGarlicResponse" message="tns:SellGarlicResponse"
+                         wsaw:Action="http://vendor.com/blackbox/GarlicPenContract/SellGarlic">
+            </wsdl:output>
+            <wsdl:fault name="FaultFault" message="tns:GarlicPenContract_SellGarlic_FaultFault_FaultMessage"
+                        wsaw:Action="http://vendor.com/blackbox/GarlicPenContract/SellGarlicFaultFault">
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GarlicPen" type="tns:GarlicPenContract">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="SellGarlic">
+            <soap:operation soapAction="http://vendor.com/blackbox/GarlicPenContract/SellGarlic" style="document"/>
+            <wsdl:input name="SellGarlicRequest">
+                <soap:header message="tns:SellGarlicRequest_Headers" part="Authentication" use="literal">
+                </soap:header>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="SellGarlicResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="FaultFault">
+                <soap:fault name="FaultFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="legacy-service-name">
+        <wsdl:port name="legacy_port_name" binding="tns:GarlicPen">
+            <soap:address location="http://some.location.org:6666/ws/legacy-service-name/1.0"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

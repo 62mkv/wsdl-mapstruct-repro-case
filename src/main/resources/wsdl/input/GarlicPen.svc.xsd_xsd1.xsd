@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://vendor.com/blackbox"
+           xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://vendor.com/blackbox"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"
+               schemaLocation="GarlicPen.svc.xsd_xsd0.xsd"/>
+    <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"
+               schemaLocation="GarlicPen.svc.xsd_xsd2.xsd"/>
+    <xs:simpleType name="Status">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Success"/>
+            <xs:enumeration value="Warning"/>
+            <xs:enumeration value="Error"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="Status" nillable="true" type="tns:Status"/>
+    <xs:complexType name="ExitStatus">
+        <xs:sequence>
+            <xs:element name="Status" type="tns:Status"/>
+            <xs:element minOccurs="0" name="StatusDetails" nillable="true" type="tns:StatusDetails"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="ExitStatus" nillable="true" type="tns:ExitStatus"/>
+    <xs:complexType name="StatusDetails">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="StatusDetail" nillable="true"
+                        type="tns:StatusDetail"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="StatusDetails" nillable="true" type="tns:StatusDetails"/>
+    <xs:complexType name="StatusDetail">
+        <xs:sequence>
+            <xs:element name="Status" type="tns:Status"/>
+            <xs:element name="Code" type="xs:int"/>
+            <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="Details" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="StatusDetail" nillable="true" type="tns:StatusDetail"/>
+    <xs:element name="SellGarlicRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="InputParameters" nillable="true"
+                            type="tns:GarlicParameterCollection"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="GarlicParameterCollection">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="GarlicParameter" nillable="true"
+                        type="tns:GarlicParameter"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="GarlicParameterCollection" nillable="true" type="tns:GarlicParameterCollection"/>
+    <xs:complexType name="GarlicParameter">
+        <xs:sequence>
+            <xs:element name="Name" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="GarlicParameter" nillable="true" type="tns:GarlicParameter"/>
+    <xs:element name="SellGarlicResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="ExitStatus" nillable="true" type="tns:ExitStatus"/>
+                <xs:element minOccurs="0" name="OutputParameters" nillable="true"
+                            type="tns:GarlicParameterCollection"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="Fault">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string"/>
+            <xs:element minOccurs="0" name="InnerMessage" nillable="true" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Fault" nillable="true" type="tns:Fault"/>
+</xs:schema>
